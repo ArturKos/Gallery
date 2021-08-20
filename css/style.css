@@ -1,0 +1,147 @@
+body
+{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12pt;
+	color: #003868;
+	background-color: white;
+	margin: 0;
+	margin-right: 0cm;
+}
+img.banner{
+  width: auto;
+  height: auto;
+}
+p.logowanie
+{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 20pt;
+	color: red;
+	border:3px solid #FDD700;
+	background-color:#EEE;
+	width:400px;
+	height:200px;
+	text-align:center;
+	padding:15px;
+	display:table-cell;
+	vertical-align:middle;
+}
+p.wciecie
+{
+	text-align: justify;
+	text-indent: 2cm;
+}
+p.tlo
+{
+background-color: #eeeeee;
+text-align: justify;
+}
+h1 {
+ text-align:center;
+ top:50;
+}
+
+pre, code
+{
+	font-size: 8pt;
+}
+
+
+dl, dt, dd, ul, li {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+dt {
+    width: 93%;
+    padding: 5px 10px;
+    font-weight: bold;
+    font-size: small;
+    text-align: center;
+    background: #1088ff ;                     /* Kolor najwiêkszego prostok¹tu (kategoria) */
+    color: #000000;                            /* kolor napisu kategorii */
+    border-width: 1px;
+    border-style: solid;
+    border-color: #dfe #365 #365 #dfe;
+    background: rgba(0, 0, 0, 0.1);
+
+}
+
+dd {
+    width: 98%;
+    padding-left: 10px;
+    background: #1088ff ;                    /* kolor ma³ego prostok¹tu */
+    border-width: 1px;
+    border-style: solid;
+    border-color: #dfe #1088ff #1088ff #dfe;
+    position: relative;
+				font-size: small;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+
+dl a,dl .interactive {
+    cursor:pointer;
+    display: block;
+    width: 94%;
+    padding: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    background: #9facb4 ;                    /* kolor belki */
+    color: #000000;                            /* kolor tekstu */
+    border-left: 1px solid #797;            /* Prawa kreska ma³ego prostok¹tu */
+    background: rgba(0, 0, 0, 0.1);
+}
+
+dl a:hover,dl a:focus,dl .interactive:hover {
+    background-color: #d1d5d7;                    /* Kolor belki po najechaniu */
+    color: white;                            /* Kolor tekstu po najechaniu */
+    background: rgba(0, 0, 0, 0.1);
+}
+ul {
+    list-style-type: none;
+    position: absolute;
+    top: 0;
+    left: -9999px;
+    background: rgba(0, 0, 0, 0.1);
+
+}
+dd:hover ul {
+    left: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+
+a.linki {
+	color: lime;
+	text-decoration: underline;
+}
+
+a.linki:active {
+	color: yellow;
+	text-decoration: none;
+}
+
+a.linki:link {
+	color: black;
+	text-decoration: none;
+}
+
+a.linki:visited {
+	color: silver;
+	text-decoration: none;
+}
+
+a.linki:focus {
+	color: red;
+	text-decoration: none;
+}
+
+a.linki:hover {
+	color: coral;
+	font-size:130%;
+	text-decoration: none;
+	font-weight: bold;
+}

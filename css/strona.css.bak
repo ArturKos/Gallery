@@ -1,0 +1,49 @@
+#TOP {
+ /*  min-height:100%;
+   height:100%;
+   */
+position:relative;
+   height: 100%;
+}
+#NAGLOWEK {
+	background-color: white;
+	padding:10px;
+	text-align: center;
+
+}
+
+#MENU {
+    top:100px;
+	width: 210px;
+	float: left;
+	overflow: visible;
+	position: relative;
+	background-color: #ccc;
+}
+
+#TRESC {
+	margin-left: 220px;
+	background-color: #fff;
+	padding:10px;
+    padding-bottom:46px;
+	margin-right:150px;
+}
+
+#STOPKA {
+   width:100%;
+   height:46px;
+
+	clear: both;
+	background-color: white;
+
+    position:relative;
+    bottom:0;
+    width:100%;
+	text-align: center;
+	
+}
+
+#tabela{
+margin:10px;
+float: left;
+}
