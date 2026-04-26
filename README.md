@@ -1,121 +1,95 @@
 # Gallery
 
-A PHP-based web image gallery with **BCrypt authentication**, session management, directory browsing, thumbnail support, and inline video playback. Users log in to browse their personal file collections organized in folders, with support for images, videos, and downloadable files.
+A small PHP web image gallery with BCrypt-authenticated, per-user file collections. Each account browses an isolated tree of images, videos, and downloads, with thumbnails, inline video playback, and a tiny audit log.
 
-![PHP](https://img.shields.io/badge/PHP-7.x%2B-777BB4?logo=php&logoColor=white)
-![HTML](https://img.shields.io/badge/HTML-XHTML%201.0-E34F26?logo=html5&logoColor=white)
-![CSS](https://img.shields.io/badge/CSS-3-1572B6?logo=css3&logoColor=white)
-![Auth](https://img.shields.io/badge/Auth-BCrypt-green)
+[![CI](https://github.com/ArturKos/Gallery/actions/workflows/ci.yml/badge.svg)](https://github.com/ArturKos/Gallery/actions/workflows/ci.yml)
+![PHP](https://img.shields.io/badge/PHP-8.1%2B-777BB4?logo=php&logoColor=white)
+![Static analysis](https://img.shields.io/badge/PHPStan-level%205-brightgreen)
+![Style](https://img.shields.io/badge/style-PSR--12-blue)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Features
+## What's interesting about it
 
-- **BCrypt password authentication** using PHP's `password_hash()` and `password_verify()` for secure credential handling
-- **Session-based access control** with login/logout, session regeneration on logout, and URL path validation to prevent directory traversal
-- **Per-user file isolation** where each user can only access files within their own `konta/<username>/data/` directory
-- **Recursive directory browsing** with dynamically generated navigation links and a back button for folder traversal
-- **Thumbnail support** displaying smaller preview images from a `miniatury/` subdirectory when available, falling back to resized originals
-- **Image format support** for JPG, JPEG, TIFF, BMP, GIF, and WMF files displayed as clickable thumbnails
-- **Inline video playback** with HTML5 `<video>` controls for MP4 and MKV files
-- **Generic file downloads** for non-media files showing filename and size in MiB
-- **Login audit logging** recording timestamp, username, and IP address to a `log.txt` file
-- **CSS-based layout** with a sidebar category menu, header banner, content area, and footer navigation
+- **Front-controller architecture.** Document root is `public/`; everything else (source, config, templates, tests, vendor) lives outside the web-served tree. `public/index.php` is a thin controller that delegates to PSR-4 autoloaded classes in `src/`.
+- **Logic / presentation split.** Templates in `templates/` only render — no DB calls, no filesystem traversal, no auth checks. Every interpolation goes through `e()` (`htmlspecialchars` with `ENT_QUOTES | ENT_HTML5`).
+- **Path-traversal hardening.** `SafePath::resolveWithin` resolves both candidate and base via `realpath()` and checks containment, so `../../etc/passwd` style inputs cannot escape a user's data directory. Covered by dedicated tests.
+- **Constant-time login.** `PasswordVerifier` runs `password_verify` against a dummy hash on unknown usernames so timing differences cannot be used to enumerate accounts.
+- **Session hygiene.** `SessionManager` sets `HttpOnly`, `SameSite=Strict`, and `Secure` (when behind HTTPS) on the session cookie, regenerates the session id on login and logout, and exposes a CSRF token used by every state-changing form.
+- **Authorized media streaming.** Files live outside the document root; `public/media.php` is the only way to reach them, gated by session and `SafePath`.
+- **Test suite.** PHPUnit 10 with 26 tests covering password verification, path-traversal cases, media classification, and directory listing against on-disk fixtures in `sys_get_temp_dir`.
+- **Static analysis & style.** PHPStan level 5 and PHP-CS-Fixer (PSR-12 + `declare(strict_types=1)`) wired into Composer scripts.
 
-## Screenshots
-
-![Login Screen](https://user-images.githubusercontent.com/17749811/152383401-26184b87-5e4b-4810-9544-74e379cc99d9.png)
-
-![Gallery View](https://user-images.githubusercontent.com/17749811/152383422-eb2b4ba5-66f7-4c01-9193-e7847422f0ed.png)
-
-## Dependencies
-
-| Dependency | Version | Purpose |
-|------------|---------|---------|
-| PHP | >= 7.0 | Server-side scripting with BCrypt support |
-| Apache / Nginx | any | Web server with PHP module |
-
-No external PHP libraries or frameworks are required. The application uses only built-in PHP functions.
-
-## Setup
-
-### 1. Deploy Files
-
-Copy all project files to your web server document root:
+## Run it
 
 ```bash
-cp -r Gallery/ /var/www/html/gallery/
-```
-
-### 2. Configure Users
-
-Edit `haslo.php` to add user accounts. Passwords must be BCrypt hashes:
-
-```php
-<?php
-return [
-    'username' => '$2y$10$...'  // Generate with: php -r "echo password_hash('password', PASSWORD_BCRYPT);"
-];
-```
-
-Generate a BCrypt hash for a password:
-
-```bash
+composer install                                   # installs dev deps + autoloader
+cp config/credentials.example.php config/credentials.php
 php -r "echo password_hash('your_password', PASSWORD_BCRYPT) . PHP_EOL;"
+# paste the hash into config/credentials.php under accounts['username']
+mkdir -p accounts/<username>/data
+# drop your images, videos, downloads anywhere under accounts/<username>/data
+php -S 127.0.0.1:8000 -t public                    # dev server
 ```
 
-### 3. Create User Directories
+Open <http://127.0.0.1:8000> and log in.
 
-For each user, create a data directory:
+Optional thumbnails: place a same-named copy of an image in a `thumbnails/` subfolder next to the original — the gallery will use it as the preview.
+
+## Quality gates
 
 ```bash
-mkdir -p konta/username/data
+composer test       # PHPUnit
+composer analyse    # PHPStan level 5
+composer lint       # PHP-CS-Fixer (dry-run)
+composer fix        # PHP-CS-Fixer (apply fixes)
 ```
 
-Place images, videos, and other files in subdirectories under `data/`. Optionally create a `miniatury/` folder inside each directory containing thumbnail versions of the images.
-
-### 4. Set Permissions
-
-```bash
-chown -R www-data:www-data /var/www/html/gallery/
-chmod -R 755 /var/www/html/gallery/
-touch log.txt && chmod 666 log.txt
-```
-
-## Project Structure
+## Layout
 
 ```
 Gallery/
-├── README.md                   # This file
-├── index.php                   # Main entry point: login form, session handling, gallery rendering
-├── func.php                    # Helper functions: file/directory search, login audit logging
-├── haslo.php                   # User credentials (username -> BCrypt hash map)
-├── css/
-│   ├── style.css               # Layout: sidebar menu, definition lists, link styles
-│   └── strona.css              # Page structure: header, menu, content, footer positioning
-├── obrazy/                     # UI assets
-│   ├── strona_domowa.gif       # Header banner
-│   ├── brein_animated.gif      # Login screen animation
-│   ├── wyloguj.gif             # Logout button image
-│   ├── wyloguj2.gif            # Logout button image (alternate)
-│   ├── cofnij.gif              # Back/home button image
-│   ├── certyfikat.gif          # SSL certificate link image
-│   └── ...                     # Additional UI graphics
-└── konta/                      # Per-user file storage (not tracked in repo)
-    └── <username>/
-        └── data/
-            ├── subfolder/
-            │   ├── image.jpg
-            │   └── miniatury/  # Optional thumbnail directory
-            │       └── image.jpg
-            └── video.mp4
+├── public/                       # document root
+│   ├── index.php                 # front controller: routes login/logout/gallery
+│   ├── media.php                 # authorized file streamer for /accounts/<user>/data
+│   ├── css/{layout,components}.css
+│   └── img/                      # static UI assets (banners, buttons)
+├── src/                          # PSR-4: ArturKos\Gallery\
+│   ├── Auth/PasswordVerifier.php   # BCrypt verify with constant-time fallback
+│   ├── Auth/SessionManager.php     # secure cookies, CSRF token, login/logout
+│   ├── Auth/LoginAuditLogger.php   # append-only login log
+│   ├── SafePath.php                # path-traversal hardening (realpath + containment)
+│   ├── DirectoryBrowser.php        # lists subdirs and files under a data root
+│   ├── MediaClassifier.php         # filename → MediaType (image / video / download)
+│   ├── MediaType.php               # enum
+│   └── MediaEntry.php              # immutable file record
+├── templates/                    # presentation only
+│   ├── helpers.php               # e() / url_path()
+│   ├── login.php
+│   └── gallery.php
+├── config/
+│   ├── credentials.example.php   # committed placeholder
+│   └── credentials.php           # gitignored: real accounts + paths
+├── tests/                        # PHPUnit
+│   ├── Auth/PasswordVerifierTest.php
+│   ├── Gallery/SafePathTest.php
+│   ├── Gallery/MediaClassifierTest.php
+│   └── Gallery/DirectoryBrowserTest.php
+├── accounts/                     # gitignored: per-user data trees
+│   └── <username>/data/...
+├── .github/workflows/ci.yml      # GitHub Actions: lint + analyse + test on PHP 8.1/8.2/8.3
+├── composer.json
+├── phpunit.xml
+├── phpstan.neon
+├── .php-cs-fixer.dist.php
+└── LICENSE
 ```
 
-## Security Notes
+## Production notes
 
-- Passwords are stored as BCrypt hashes, never in plain text
-- Session IDs are regenerated on logout to prevent session fixation
-- Directory traversal is blocked by validating that requested paths contain the user's base directory
-- The `log.txt` file records all successful logins with timestamps and IP addresses for audit purposes
+- The PHP built-in server is fine for development. In production, point Apache or Nginx at `public/` as the document root and let it serve `media.php` through PHP-FPM.
+- `config/credentials.php`, `log.txt`, and `accounts/` are gitignored — they hold per-deployment state and must never be committed.
+- For HTTPS deployments the `Secure` cookie flag is set automatically when `$_SERVER['HTTPS']` is non-empty.
 
 ## License
 
-This project is provided as-is for educational purposes.
+[MIT](LICENSE).

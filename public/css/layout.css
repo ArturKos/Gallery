@@ -1,0 +1,45 @@
+html,
+body {
+    background-color: #fff;
+    color: #000;
+    margin: 0;
+    padding: 0;
+    background-image: url("/img/0068.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+#header {
+    background: rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#menu {
+    width: 250px;
+    float: left;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+#info {
+    width: 150px;
+    float: right;
+    overflow: hidden;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+#content {
+    margin-left: 250px;
+    margin-right: 150px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+}
+
+#footer {
+    clear: both;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.1);
+}
