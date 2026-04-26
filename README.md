@@ -8,6 +8,12 @@ A small PHP web image gallery with BCrypt-authenticated, per-user file collectio
 ![Style](https://img.shields.io/badge/style-PSR--12-blue)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+## Screenshots
+
+| Login | Gallery — root | Gallery — folder |
+|-------|----------------|------------------|
+| ![Login](docs/screenshots/login.png) | ![Gallery root](docs/screenshots/gallery-root.png) | ![Gallery folder](docs/screenshots/gallery-holiday.png) |
+
 ## What's interesting about it
 
 - **Front-controller architecture.** Document root is `public/`; everything else (source, config, templates, tests, vendor) lives outside the web-served tree. `public/index.php` is a thin controller that delegates to PSR-4 autoloaded classes in `src/`.
