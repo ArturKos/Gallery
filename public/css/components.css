@@ -1,0 +1,109 @@
+body {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12pt;
+    color: #003868;
+}
+
+.banner {
+    width: auto;
+    height: auto;
+}
+
+#menu dl,
+#menu dt,
+#menu dd {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+#menu dt {
+    width: 93%;
+    padding: 5px 10px;
+    font-weight: bold;
+    font-size: small;
+    text-align: center;
+    color: #000;
+    border: 1px solid;
+    border-color: #dfe #365 #365 #dfe;
+}
+
+#menu dd {
+    width: 98%;
+    padding-left: 10px;
+    border: 1px solid;
+    border-color: #dfe #1088ff #1088ff #dfe;
+    font-size: small;
+}
+
+#menu a {
+    display: block;
+    width: 94%;
+    padding: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #000;
+    border-left: 1px solid #797;
+}
+
+#menu a:hover,
+#menu a:focus {
+    background-color: #d1d5d7;
+    color: #fff;
+}
+
+#content .thumbnail-link img,
+#content video {
+    margin: 4px;
+    vertical-align: middle;
+}
+
+#content .download-link {
+    color: #000;
+    text-decoration: none;
+    display: inline-block;
+    padding: 4px 8px;
+}
+
+#content .download-link:hover {
+    color: coral;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+#info form button.logout {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.login {
+    max-width: 420px;
+    margin: 80px auto;
+    text-align: center;
+}
+
+.login__form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.login__form input,
+.login__form button {
+    padding: 8px 12px;
+    font-size: 1rem;
+    width: 240px;
+}
+
+.login__error {
+    color: #b00;
+    font-weight: bold;
+}
+
+.login__decoration {
+    margin-top: 16px;
+}
